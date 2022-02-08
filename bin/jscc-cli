@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 /*jshint node:true, strict:false*/
 
 var jsx = false;
@@ -33,7 +33,7 @@ if (process.argv.length > 2) {
 if (jsx) {
     var acorn = require('acorn-jsx');
 } else {
-    var esprima = require('esprima');
+    var esprima = require('nightly-esprima');
 }
 
 var escope = require('escope');

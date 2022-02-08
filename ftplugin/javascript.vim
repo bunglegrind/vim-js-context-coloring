@@ -14,7 +14,7 @@ setlocal iskeyword+=$
 let b:did_jscc_ftplugin = 1
 let b:scope_groups = []
 
-let s:cli_cmd = 'jscc-cli'
+let s:cli_cmd = 'jscc-cli.bat"'
 
 " check options to send as CLI params
 if !exists('g:js_context_colors_jsx')
@@ -65,7 +65,7 @@ if g:js_context_colors_es5
     let s:cli_cmd = 'jscc-cli-legacy'
 endif
 
-let s:jscc = expand('<sfile>:p:h') . '/../bin/' . s:cli_cmd
+let s:jscc = '"' . expand('<sfile>:p:h') . '\..\bin\' . s:cli_cmd
 
 let s:region_count = 1
 
