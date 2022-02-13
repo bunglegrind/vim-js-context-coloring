@@ -33,10 +33,10 @@ if (process.argv.length > 2) {
 if (jsx) {
     var acorn = require('acorn-jsx');
 } else {
-    var esprima = require('nightly-esprima');
+    var espree = require('espree');
 }
 
-var escope = require('escope');
+var escope = require('eslint-scope');
 
 var input_js = '';
 var scopes = [];
@@ -57,7 +57,6 @@ function isModule(js) {
 }
 
 process.stdin.on('end', function() {
-
     var ast;
     var sourceType = isModule(input_js) ? 'module' : 'script';
     
@@ -72,21 +71,23 @@ process.stdin.on('end', function() {
         });
 
     } else {
-        ast  = esprima.parse(input_js, {
+        ast  = espree.parse(input_js, {
+            ecmaVersion: "latest",
             range: true,
-            tolerant:true
+            sourceType: sourceType,
+            allowImportExportEverywhere: true,
+            allowReturnOutsideFunction: true,
         });
     }
 
     var scopeManager = escope.analyze(ast, {
             optimistic: true,
             ignoreEval: true,
-            ecmaVersion: 6,
+            ecmaVersion: "latest",
             sourceType: sourceType,
     }); 
 
     var toplevel = scopeManager.acquire(ast);
-
     var enclosed = {};
     var declared_globals = [];
     var undeclared_globals = [];
@@ -103,8 +104,7 @@ process.stdin.on('end', function() {
             undeclared_globals.push(ref.identifier.name);
         }
     });
-    scopes.push([0, toplevel.block.range[0], toplevel.block.range[1], enclosed]);
-
+        scopes.push([0, toplevel.block.range[0], toplevel.block.range[1], enclosed]);
     function hasLet(scope) {
             var v,
             variable,
